@@ -1,9 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import css from './Filter.module.css';
 
-class Filter extends Component {
-  render() {
-    const { onChange } = this.props;
+const Filter = ({ onChange }) => {
 
     return (
       <div className={css.filter}>
@@ -18,6 +16,6 @@ class Filter extends Component {
       </div>
     );
   }
-}
+
 
 export default Filter;
