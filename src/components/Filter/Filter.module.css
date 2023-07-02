@@ -1,0 +1,11 @@
+.filter {
+  width: 470px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.label {
+  font-size: 18px;
+}
