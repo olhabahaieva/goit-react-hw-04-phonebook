@@ -1,107 +1,86 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import css from './Phonebook.module.css';
 import Section from 'components/Section';
 import PropTypes from 'prop-types';
 
-class Phonebook extends Component {
-  state = {
-    inputValue: '',
-    inputNumber: '',
-    contacts: [],
+const Phonebook = ({ inputValue, inputNumber, contacts, createContact }) => {
+  const [inputValueState, setInputValue] = useState('');
+  const [inputNumberState, setInputNumber] = useState('');
+  const [contactsState, setContacts] = useState([]);
+
+  const onChange = e => {
+    setInputValue(e.target.value);
   };
 
-  onChange = e => {
-    this.setState({
-      inputValue: e.target.value,
-    });
+  const onNumberChange = e => {
+    setInputNumber(e.target.value);
   };
 
-  onNumberChange = e => {
-    this.setState({
-      inputNumber: e.target.value,
-    });
-  };
-
-  handleButtonClick = e => {
+  const handleButtonClick = e => {
     e.preventDefault();
-    const { inputValue, inputNumber, contacts } = this.state;
-    const { createContact } = this.props;
 
     const newContact = {
-      name: inputValue,
-      number: inputNumber,
+      name: inputValueState,
+      number: inputNumberState,
     };
 
     const updatedContacts = [...contacts, newContact];
 
-    createContact(inputValue, inputNumber);
-
-    this.setState({
-      inputValue: '',
-      inputNumber: '',
-      contacts: updatedContacts,
-    });
+    createContact(inputValueState, inputNumberState);
+    setInputValue('');
+    setInputNumber('');
+    setContacts(updatedContacts);
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevState.contacts !== this.state.contacts &&
-      this.state.contacts.length > 0
-    ) {
-      localStorage.setItem(
-        'PhonebookContacts',
-        JSON.stringify(this.state.contacts)
-      );
+  useEffect(() => {
+    if (contacts !== contactsState && contacts.length > 0) {
+      localStorage.setItem('PhonebookContacts', JSON.stringify(contacts));
     }
-  }
+  }, [contacts, contactsState]);
 
-  render() {
-    const { inputValue, inputNumber } = this.state;
+  return (
+    <>
+      <Section title="Phonebook">
+        <div className={css.phonebook}>
+          <form className={css.form} action="">
+            <label className={css.label} htmlFor="name">
+              Name
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={inputValue}
+              onChange={onChange}
+            />
+            <label className={css.label} htmlFor="number">
+              Number
+            </label>
+            <input
+              type="tel"
+              name="number"
+              value={inputNumber}
+              onChange={onNumberChange}
+            />
 
-    return (
-      <>
-        <Section title="Phonebook">
-          <div className={css.phonebook}>
-            <form className={css.form} action="">
-              <label className={css.label} htmlFor="name">
-                Name
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={inputValue}
-                onChange={this.onChange}
-              />
-              <label className={css.label} htmlFor="number">
-                Number
-              </label>
-              <input
-                type="tel"
-                name="number"
-                value={inputNumber}
-                onChange={this.onNumberChange}
-              />
-
-              <button
-                onClick={this.handleButtonClick}
-                className={css.button}
-                name="submit"
-                type="submit"
-              >
-                Add contact
-              </button>
-            </form>
-          </div>
-        </Section>
-      </>
-    );
-  }
-}
-
-export default Phonebook;
+            <button
+              onClick={handleButtonClick}
+              className={css.button}
+              name="submit"
+              type="submit"
+            >
+              Add contact
+            </button>
+          </form>
+        </div>
+      </Section>
+    </>
+  );
+};
 
 Phonebook.propTypes = {
   inputValue: PropTypes.string,
   inputNumber: PropTypes.string,
   contacts: PropTypes.array,
 };
+
+export default Phonebook;
