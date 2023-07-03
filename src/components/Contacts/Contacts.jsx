@@ -1,31 +1,32 @@
-import React, { Component } from 'react';
+import React, {useEffect, useState} from 'react';
 import css from './Contacts.module.css';
 import Section from 'components/Section';
 import PropTypes from 'prop-types';
 
-class Contacts extends Component {
-  handleDeleteClick = (id) => {
-    const { onDeleteContact } = this.props;
+
+const Contacts = ({ contacts, onDeleteContact }) =>{
+  const [contactsState, setContacts] = useState([]);
+
+  const handleDeleteClick = (id) => {
     onDeleteContact(id);
+    handleDeleteContactFromLocalStorage(id);
   };
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.contacts !== this.props.contacts) {
-      localStorage.setItem('PhonebookContacts', JSON.stringify(this.props.contacts));
+  useEffect(()=>{
+    if (contacts !== contactsState) {
+      setContacts(localStorage.setItem('PhonebookContacts', JSON.stringify(contacts)))
     }
-  }
+  }, [contacts, contactsState])
 
-  handleDeleteContactFromLocalStorage = (id) => {
+  const handleDeleteContactFromLocalStorage = (id) => {
     const savedContacts = localStorage.getItem('PhonebookContacts');
     if (savedContacts) {
       const parsedContacts = JSON.parse(savedContacts);
       const updatedContacts = parsedContacts.filter((contact) => contact.id !== id);
-      localStorage.setItem('PhonebookContacts', JSON.stringify(updatedContacts));
+      setContacts( localStorage.setItem('PhonebookContacts', JSON.stringify(updatedContacts)))
     }
   };
 
-  render() {
-    const { contacts } = this.props;
 
     if (contacts.length === 0) {
       return null;
@@ -39,8 +40,7 @@ class Contacts extends Component {
               {contact.name} : {contact.number}
               <button
                 onClick={() => {
-                  this.handleDeleteClick(contact.id);
-                  this.handleDeleteContactFromLocalStorage(contact.id);
+                  handleDeleteClick(contact.id);
                 }}
                 className={css.delete}
               >
@@ -52,16 +52,15 @@ class Contacts extends Component {
       </Section>
     );
   }
-}
+  Contacts.propTypes = {
+    contacts: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string,
+        name: PropTypes.string,
+        number: PropTypes.string,
+      })
+    ).isRequired,
+  };
 
-Contacts.propTypes = {
-  contacts: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string,
-      name: PropTypes.string,
-      number: PropTypes.string,
-    })
-  ).isRequired,
-};
 
 export default Contacts;
