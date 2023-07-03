@@ -3,19 +3,17 @@ import Phonebook from './Phonebook';
 import Contacts from './Contacts';
 import Filter from './Filter';
 
-export const App = ({ contacts, filter }) => {
+export const App = () => {
   const [contactsState, setContacts] = useState([]);
   const [filterState, setFilter] = useState('');
 
-  // Filter set state function
-  const handleFilterClick = e => {
+  const handleFilterClick = (e) => {
     setFilter(e.target.value);
   };
 
-  // Enter contact name and number function
-  const handlePhonebookClick = (inputName, inputNumber, contactsState) => {
+  const handlePhonebookClick = (inputName, inputNumber) => {
     const existingContact = contactsState.find(
-      contact => contact.name.toLowerCase() === inputName.toLowerCase()
+      (contact) => contact.name.toLowerCase() === inputName.toLowerCase()
     );
 
     if (existingContact) {
@@ -26,12 +24,12 @@ export const App = ({ contacts, filter }) => {
         name: inputName,
         number: inputNumber,
       };
-      setContacts([...contacts, newContact]);
+      setContacts([...contactsState, newContact]);
     }
   };
 
-  const handleContactDelete = id => {
-    setContacts(contacts.filter(contact => contact.id !== id));
+  const handleContactDelete = (id) => {
+    setContacts(contactsState.filter((contact) => contact.id !== id));
   };
 
   useEffect(() => {
@@ -40,10 +38,9 @@ export const App = ({ contacts, filter }) => {
     if (savedContacts) {
       setContacts(JSON.parse(savedContacts));
     }
-  }, [contacts, contactsState]);
+  }, []);
 
-  // Filter the contacts based on the filter state
-  const filteredContacts = contactsState.filter(contact =>
+  const filteredContacts = contactsState.filter((contact) =>
     contact.name.toLowerCase().includes(filterState.toLowerCase())
   );
 
@@ -59,12 +56,9 @@ export const App = ({ contacts, filter }) => {
         color: '#010101',
       }}
     >
-      <Phonebook createContact={handlePhonebookClick} contacts={contacts} />
+      <Phonebook createContact={handlePhonebookClick} contacts={contactsState} />
       <Filter onChange={handleFilterClick} />
-      <Contacts
-        contacts={filteredContacts}
-        onDeleteContact={handleContactDelete}
-      />
+      <Contacts contacts={filteredContacts} onDeleteContact={handleContactDelete} />
     </div>
   );
 };

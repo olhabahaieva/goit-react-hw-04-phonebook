@@ -3,40 +3,31 @@ import css from './Phonebook.module.css';
 import Section from 'components/Section';
 import PropTypes from 'prop-types';
 
-const Phonebook = ({ inputValue, inputNumber, contacts, createContact }) => {
-  const [inputValueState, setInputValue] = useState('');
-  const [inputNumberState, setInputNumber] = useState('');
-  const [contactsState, setContacts] = useState([]);
+const Phonebook = ({ contacts, createContact }) => {
+  const [inputValue, setInputValue] = useState('');
+  const [inputNumber, setInputNumber] = useState('');
 
-  const onChange = e => {
+  const onChange = (e) => {
     setInputValue(e.target.value);
   };
 
-  const onNumberChange = e => {
+  const onNumberChange = (e) => {
     setInputNumber(e.target.value);
   };
 
-  const handleButtonClick = e => {
+  const handleButtonClick = (e) => {
     e.preventDefault();
 
-    const newContact = {
-      name: inputValueState,
-      number: inputNumberState,
-    };
-
-    const updatedContacts = [...contacts, newContact];
-
-    createContact(inputValueState, inputNumberState);
+    createContact(inputValue, inputNumber);
     setInputValue('');
     setInputNumber('');
-    setContacts(updatedContacts);
   };
 
   useEffect(() => {
-    if (contacts !== contactsState && contacts.length > 0) {
+    if (contacts && contacts.length > 0) {
       localStorage.setItem('PhonebookContacts', JSON.stringify(contacts));
     }
-  }, [contacts, contactsState]);
+  }, [contacts]);
 
   return (
     <>
@@ -78,9 +69,8 @@ const Phonebook = ({ inputValue, inputNumber, contacts, createContact }) => {
 };
 
 Phonebook.propTypes = {
-  inputValue: PropTypes.string,
-  inputNumber: PropTypes.string,
   contacts: PropTypes.array,
+  createContact: PropTypes.func.isRequired,
 };
 
 export default Phonebook;
