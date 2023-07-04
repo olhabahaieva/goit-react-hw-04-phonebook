@@ -4,6 +4,7 @@ import Section from 'components/Section';
 import PropTypes from 'prop-types';
 
 const Contacts = ({ contacts, onDeleteContact }) => {
+  // eslint-disable-next-line
   const [contactsState, setContacts] = useState([]);
 
   const handleDeleteClick = id => {
