@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import css from './Contacts.module.css';
 import Section from 'components/Section';
 import PropTypes from 'prop-types';
@@ -10,14 +10,6 @@ const Contacts = ({ contacts, onDeleteContact }) => {
     onDeleteContact(id);
     handleDeleteContactFromLocalStorage(id);
   };
-
-  useEffect(() => {
-    if (contacts !== contactsState) {
-      setContacts(
-        localStorage.setItem('PhonebookContacts', JSON.stringify(contacts))
-      );
-    }
-  }, [contacts, contactsState]);
 
   const handleDeleteContactFromLocalStorage = id => {
     const savedContacts = localStorage.getItem('PhonebookContacts');
